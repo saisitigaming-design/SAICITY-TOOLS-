@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saicity Tools | Ultimate Web Utilities</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        /* CSS Variables for Theme */
+        :root {
+            --primary: #FF0000;
+            --primary-glow: rgba(255, 0, 0, 0.4);
+            --bg-main: #0a0a0c;
+            --bg-surface: #14141a;
+            --bg-surface-light: #1f1f29;
+            --text-light: #ffffff;
+            --text-muted: #888899;
+            --font-main: 'Poppins', sans-serif;
+        }
+
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-main);
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-light);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Typography */
+        h1, h2, h3 { text-transform: uppercase; letter-spacing: 1px; }
+        .accent { color: var(--primary); }
+
+        /* --- Navbar (Glassmorphism) --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 70px;
+            background: rgba(20, 20, 26, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 5%;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            text-decoration: none;
+            color: var(--text-light);
+            text-transform: uppercase;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover { color: var(--primary); }
+
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--text-light);
+        }
+
+        /* --- Hero Section --- */
+        .hero {
+            height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 20px;
+            background: radial-gradient(circle at center, var(--bg-surface) 0%, var(--bg-main) 100%);
+            margin-top: 70px;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            max-width: 600px;
+        }
+
+        .btn-cta {
+            padding: 15px 35px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: transparent;
+            color: var(--text-light);
+            border: 2px solid var(--primary);
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px transparent;
+        }
+
+        .btn-cta:hover {
+            background: var(--primary);
+            box-shadow: 0 0 20px var(--primary-glow);
+            transform: scale(1.05);
+        }
+
+        /* --- Tools Section --- */
+        #tools-section {
+            padding: 80px 5%;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .tool-card {
+            background: var(--bg-surface);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 30px;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(255, 0, 0, 0.1);
+        }
+
+        .tool-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .tool-card h3 { font-size: 1.3rem; }
+
+        /* Form Inputs & Buttons */
+        input[type="text"], input[type="number"], input[type="date"], input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-surface-light);
+            border: 1px solid #333;
+            border-radius: 4px;
+            color: var(--text-light);
+            outline: none;
+            transition: border 0.3s ease;
+        }
+
+        input:focus { border-color: var(--primary); }
+
+        .tool-btn {
+            padding: 10px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+            width: 100%;
+        }
+
+        .tool-btn:hover { background: #cc0000; }
+
+        .result-box {
+            min-height: 40px;
+            padding: 10px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            word-break: break-all;
+        }
+
+        /* Specific Tool Styles */
+        #qr-result img { max-width: 150px; margin-top: 10px; border-radius: 8px; display: none; }
+        .tags-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .tag { background: var(--primary); padding: 5px 10px; border-radius: 15px; font-size: 0.8rem; }
+
+        /* --- Footer --- */
+        footer {
+            text-align: center;
+            padding: 30px;
+            background: var(--bg-surface);
+            border-top: 1px solid rgba(255, 0, 0, 0.2);
+            margin-top: 50px;
+        }
+
+        /* --- Responsive Design --- */
+        @media (max-width: 768px) {
+            .nav-links {
+                position: absolute;
+                top: 70px;
+                right: -100%;
+                flex-direction: column;
+                background: var(--bg-surface);
+                width: 100%;
+                text-align: center;
+                padding: 20px 0;
+                transition: right 0.3s ease;
+                border-bottom: 1px solid var(--primary);
+            }
+            .nav-links.active { right: 0; }
+            .hamburger { display: block; }
+            .hero h1 { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="#" class="logo">Saicity <span class="accent">Tools</span></a>
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#tools-section">Tools</a></li>
+            <li><a href="#">About</a></li>
+        </ul>
+        <div class="hamburger" id="hamburger">
+            <i class="fas fa-bars"></i>
+        </div>
+    </nav>
+
+    <section class="hero" id="home">
+        <h1>Power up your <span class="accent">Workflow</span></h1>
+        <p>An all-in-one suite of essential web utilities wrapped in a sleek, high-performance interface. Generate, calculate, and convert instantly.</p>
+        <a href="#tools-section" class="btn-cta">Explore Tools</a>
+    </section>
+
+    <section id="tools-section">
+        <h2 class="section-title">Utility <span class="accent">Arsenal</span></h2>
+        
+        <div class="tools-grid">
+            
+            <div class="tool-card">
+                <i class="fas fa-qrcode tool-icon"></i>
+                <h3>QR Code Generator</h3>
+                <input type="text" id="qr-input" placeholder="Enter URL or text...">
+                <button class="tool-btn" onclick="generateQR()">Generate QR</button>
+                <div class="result-box" style="flex-direction: column;">
+                    <span id="qr-placeholder">QR will appear here</span>
+                    <img id="qr-result-img" src="" alt="QR Code">
+                </div>
+            </div>
+
+            <div class="tool-card">
+                <i class="fas fa-birthday-cake tool-icon"></i>
+                <h3>Age Calculator</h3>
+                <input type="date" id="dob-input">
+                <button class="tool-btn" onclick="calculateAge()">Calculate Age</button>
+                <div class="result-box" id="age-result">Result will appear here</div>
+            </div>
+
+            <div class="tool-card">
+                <i class="fas fa-percent tool-icon"></i>
+                <h3>Percentage Calculator</h3>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="number" id="perc-val" placeholder="%">
+                    <span>of</span>
+                    <input type="number" id="perc-total" placeholder="Number">
+                </div>
+                <button class="tool-btn" onclick="calculatePercentage()">Calculate</button>
+                <div class="result-box" id="perc-result">Result will appear here</div>
+            </div>
+
+            <div class="tool-card">
+                <i class="fas fa-tags tool-icon"></i>
+                <h3>Tags Generator</h3>
+                <input type="text" id="tags-input" placeholder="Enter words separated by commas...">
+                <button class="tool-btn" onclick="generateTags()">Generate Tags</button>
+                <div class="tags-container" id="tags-result"></div>
+            </div>
+
+            <div class="tool-card">
+                <i class="fas fa-file-pdf tool-icon"></i>
+                <h3>JPG to PDF Converter</h3>
+                <input type="file" id="img-input" accept="image/jpeg, image/png">
+                <button class="tool-btn" onclick="convertToPDF()">Convert & Download</button>
+                <div class="result-box" id="pdf-result">Select an image first</div>
+            </div>
+
+            <div class="tool-card">
+                <i class="fas fa-tint tool-icon"></i>
+                <h3>Water Reminder</h3>
+                <input type="number" id="water-interval" placeholder="Minutes between reminders">
+                <button class="tool-btn" id="water-btn" onclick="toggleWaterReminder()">Start Reminder</button>
+                <div class="result-box" id="water-status">Status: Inactive</div>
+            </div>
+
+            <div class="tool-card">
+                <i class="fas fa-calculator tool-icon"></i>
+                <h3>EMI Calculator</h3>
+                <input type="number" id="emi-amount" placeholder="Loan Amount (₹)">
+                <input type="number" id="emi-rate" placeholder="Interest Rate (%)">
+                <input type="number" id="emi-months" placeholder="Tenure (Months)">
+                <button class="tool-btn" onclick="calculateEMI()">Calculate EMI</button>
+                <div class="result-box" id="emi-result">EMI will appear here</div>
+            </div>
+
+            <div class="tool-card">
+                <i class="fas fa-video tool-icon"></i>
+                <h3>Video Downloader</h3>
+                <input type="text" id="video-url" placeholder="Paste Video URL here...">
+                <button class="tool-btn" onclick="downloadVideo()">Download Video</button>
+                <div class="result-box" id="video-result">Supports standard formats</div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Saicity Tools. Built for performance. Developed with <span class="accent">♥</span>.</p>
+    </footer>
+
+    <script>
+        // --- Mobile Navbar Toggle ---
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // --- 1. QR Code Generator ---
+        function generateQR() {
+            const input = document.getElementById('qr-input').value;
+            const img = document.getElementById('qr-result-img');
+            const placeholder = document.getElementById('qr-placeholder');
+            
+            if (!input) {
+                alert("Please enter a valid URL or text.");
+                return;
+            }
+            
+            const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(input)}`;
+            img.src = qrUrl;
+            img.style.display = 'block';
+            placeholder.style.display = 'none';
+        }
+
+        // --- 2. Age Calculator ---
+        function calculateAge() {
+            const dobInput = document.getElementById('dob-input').value;
+            const resultBox = document.getElementById('age-result');
+            
+            if (!dobInput) {
+                resultBox.innerText = "Please select a date of birth.";
+                return;
+            }
+
+            const dob = new Date(dobInput);
+            const today = new Date();
+            
+            let age = today.getFullYear() - dob.getFullYear();
+            const m = today.getMonth() - dob.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+            resultBox.innerHTML = `You are <span class="accent" style="font-weight:bold; font-size:1.2rem;">${age}</span> years old.`;
+        }
+
+        // --- 3. Percentage Calculator ---
+        function calculatePercentage() {
+            const val = parseFloat(document.getElementById('perc-val').value);
+            const total = parseFloat(document.getElementById('perc-total').value);
+            const resultBox = document.getElementById('perc-result');
+
+            if (isNaN(val) || isNaN(total)) {
+                resultBox.innerText = "Please enter valid numbers.";
+                return;
+            }
+            
+            const result = (val / 100) * total;
+            resultBox.innerHTML = `${val}% of ${total} is <span class="accent" style="font-weight:bold;">${result.toFixed(2)}</span>`;
+        }
+
+        // --- 4. Tags Generator ---
+        function generateTags() {
+            const input = document.getElementById('tags-input').value;
+            const container = document.getElementById('tags-result');
+            container.innerHTML = ''; 
+
+            if (!input.trim()) return;
+
+            const tags = input.split(',').map(tag => tag.trim()).filter(tag => tag);
+            tags.forEach(tag => {
+                const span = document.createElement('span');
+                span.className = 'tag';
+                span.innerText = `#${tag.replace(/\s+/g, '')}`;
+                container.appendChild(span);
+            });
+        }
+
+        // --- 5. JPG to PDF Converter ---
+        function convertToPDF() {
+            const fileInput = document.getElementById('img-input');
+            const resultBox = document.getElementById('pdf-result');
+
+            if (fileInput.files.length === 0) {
+                resultBox.innerText = "Please upload an image first.";
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            resultBox.innerText = "Processing...";
+
+            reader.onload = function(e) {
+                try {
+                    const { jsPDF } = window.jspdf;
+                    const doc = new jsPDF();
+                    const imgData = e.target.result;
+                    
+                    // Simple logic to fit image to A4 page
+                    doc.addImage(imgData, 'JPEG', 15, 40, 180, 160);
+                    doc.save("Saicity_Converted.pdf");
+                    resultBox.innerHTML = "<span style='color:#00ff00;'>Downloaded Successfully!</span>";
+                } catch (error) {
+                    resultBox.innerText = "Error: Please check image format.";
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // --- 6. Water Reminder ---
+        let waterTimer = null;
+        function toggleWaterReminder() {
+            const btn = document.getElementById('water-btn');
+            const statusBox = document.getElementById('water-status');
+            const minutes = parseInt(document.getElementById('water-interval').value);
+
+            if (waterTimer) {
+                // Stop Reminder
+                clearInterval(waterTimer);
+                waterTimer = null;
+                btn.innerText = "Start Reminder";
+                btn.style.background = "var(--primary)";
+                statusBox.innerText = "Status: Inactive";
+            } else {
+                // Start Reminder
+                if (isNaN(minutes) || minutes <= 0) {
+                    alert("Please enter a valid number of minutes.");
+                    return;
+                }
+                
+                // Request Notification Permission
+                if (Notification.permission !== "granted") {
+                    Notification.requestPermission();
+                }
+
+                btn.innerText = "Stop Reminder";
+                btn.style.background = "#555";
+                statusBox.innerHTML = `Status: <span style='color:#00ff00;'>Active (Every ${minutes}m)</span>`;
+
+                waterTimer = setInterval(() => {
+                    if (Notification.permission === "granted") {
+                        new Notification("Saicity Tools: Hydration Alert!", {
+                            body: "Time to drink a glass of water!",
+                            icon: "https://cdn-icons-png.flaticon.com/512/3105/3105807.png"
+                        });
+                    } else {
+                        alert("Time to drink a glass of water!");
+                    }
+                }, minutes * 60000);
+            }
+        }
+
+        // --- 7. EMI Calculator ---
+        function calculateEMI() {
+            const p = parseFloat(document.getElementById('emi-amount').value);
+            const r = parseFloat(document.getElementById('emi-rate').value) / 12 / 100; // Monthly interest rate
+            const n = parseFloat(document.getElementById('emi-months').value);
+            const resultBox = document.getElementById('emi-result');
+
+            if (isNaN(p) || isNaN(r) || isNaN(n) || p<=0 || n<=0) {
+                resultBox.innerText = "Please enter valid amounts.";
+                return;
+            }
+
+            // EMI Formula: P * R * (1+R)^N / ((1+R)^N - 1)
+            const emi = (p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
+            const totalAmount = emi * n;
+            const totalInterest = totalAmount - p;
+
+            resultBox.innerHTML = `
+                EMI: <span class="accent">₹${emi.toFixed(2)}</span> /mo<br>
+                Total Int: ₹${totalInterest.toFixed(2)}
+            `;
+        }
+
+        // --- 8. Video Downloader ---
+        function downloadVideo() {
+            const url = document.getElementById('video-url').value;
+            const resultBox = document.getElementById('video-result');
+
+            if (!url) {
+                resultBox.innerText = "Please enter a valid video link.";
+                return;
+            }
+
+            // Client-side JS cannot bypass CORS/Backend parsing required for downloading from YouTube/Insta etc.
+            resultBox.innerHTML = "<span style='color:var(--primary); font-size:0.8rem;'>Error: Backend API required to bypass cross-origin blocks for video extraction. UI constructed successfully.</span>";
+        }
+    </script>
+</body>
+</html>
